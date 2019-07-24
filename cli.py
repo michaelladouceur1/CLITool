@@ -1,4 +1,5 @@
 import curses
+from curses.textpad import rectangle
 import time
 import math
 import random
@@ -26,26 +27,48 @@ class SSelect:
 
         if not choices:
             raise ValueError('Choices can not be empty')
+        if choice_orient_y < 0:
+            raise ValueError('choice_orient_y can not be less than 0')
+        if choice_orient_x < 0:
+            raise ValueError('choice_orient_x can not be less than 0')
 
         self.init_screen()
 
         self.message = message
+        self.message_height = 3
         self.choices = choices
 
         self.message_orient = message_orient
         self.choice_orient_x = choice_orient_x
         self.choice_orient_y = choice_orient_y
 
-        if self.message is not None:
-            if isinstance(choice_orient_y, int):
-                self.max_lines = min(self.h-choice_orient_y, max_lines-choice_orient_y)
-            else:
-                self.max_lines = min(self.h, max_lines)
+        if max_lines is not None:
+            self.max_lines = max_lines
         else:
-            if isinstance(choice_orient_y, int):
-                self.max_lines = min(self.h-choice_orient_y, max_lines-choice_orient_y)  
-            else:
-                self.max_lines = min(self.h, max_lines)
+            self.max_lines = self.h
+
+        if self.message is not None:
+            self.prompt_height = self.max_lines + self.message_height
+        else:
+            self.prompt_height = self.max_lines
+
+        if self.prompt_height > self.h:
+            self.prompt_height = self.h
+        
+
+        # if self.message is not None:
+        #     self.total_lines = max_lines + 2
+
+        # if self.message is not None:
+        #     if isinstance(choice_orient_y, int):
+        #         self.max_lines = min(self.h-choice_orient_y, max_lines-choice_orient_y)
+        #     else:
+        #         self.max_lines = min(self.h, max_lines)
+        # else:
+        #     if isinstance(choice_orient_y, int):
+        #         self.max_lines = min(self.h-choice_orient_y, max_lines-choice_orient_y)  
+        #     else:
+        #         self.max_lines = min(self.h, max_lines)
 
         self.offset = 0
         self.selected = 0
@@ -262,6 +285,7 @@ class MSelect:
 
         self.message = message
         self.choices = choices
+        self.selectedChoices = []
 
         self.message_orient = message_orient
         self.choice_orient_x = choice_orient_x
@@ -382,9 +406,8 @@ class MSelect:
         return y
 
     def orient_message(self, x, y):
-        if self.message_orient == 'top':
-            mx = self.w//2 - int(len(self.message)//2)
-            my = y - 2
+        mx = self.w//2 - int(len(self.message)//2)
+        my = y - 3
 
         return mx, my
 
@@ -415,8 +438,10 @@ class MSelect:
             mx, my = self.orient_message(x, y)
             totalPage = math.ceil(len(self.choices)/self.max_lines)
             currentPage = math.ceil(self.offset/self.max_lines) + 1
-            self.screen.addstr(my,mx,f'{self.message} ({currentPage} of {totalPage})', curses.color_pair(3))
-            self.screen.addstr(my+1,mx,'='*len(self.message), curses.color_pair(3))
+            self.screen.addstr(my,mx,f'{self.message}', curses.color_pair(3))
+            self.screen.addstr(my+1,mx,f'({currentPage} of {totalPage})', curses.color_pair(3))
+            # self.screen.addstr(my+1,mx,'='*len(self.message), curses.color_pair(3))
+            rectangle(self.screen, my-1, mx-1, my+2, mx+len(self.message))
         else:
             return
 
@@ -427,10 +452,17 @@ class MSelect:
         if idx == 0:
             self.display_message(x,y)
 
-        if idx == self.selected:
+        if idx == self.selected or item in self.selectedChoices:
             self.screen.addstr(y,x,str(item),curses.color_pair(2))
         else:
             self.screen.addstr(y,x,str(item),curses.color_pair(1))
+
+    def addChoice(self):
+        item = self.choices[self.selected+self.offset]
+        if item == any(self.selectedChoices):
+            self.selectedChoices.remove(item)
+        else:
+            self.selectedChoices.append(item)
 
     def render(self):
         self.screen.erase()
@@ -459,9 +491,18 @@ class MSelect:
                 self.page(self.UP)
             elif input == 10:
                 self.deinit_screen()
-                return self.choices[self.selected+self.offset]
+                return self.selectedChoices
+            elif input == 32:
+                self.addChoice()
             elif input == 27:
                 self.deinit_screen()
                 break
             else:
                 pass
+
+# select = MSelect(
+#     message = 'PART NUMBER',
+#     choices=[f'PPC{random.randrange(100000)}.40' for i in range(1000)],
+#     menu_color=colors.colors['blue'], max_lines=15, choice_orient_y=5)
+# answer = select.run()
+# print(answer)
