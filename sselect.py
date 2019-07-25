@@ -16,23 +16,22 @@ class SSelect:
         message = None,
         choices = [],
         max_lines = None,
-        message_orient = 'top',
-        choice_orient_x = 'center',
-        choice_orient_y = 'center',
-        word_color = colors['defaultW'],
-        word_select_color = colors['black'],
-        back_color = colors['black'],
-        back_select_color = colors['defaultSB'],
-        menu_color = colors['defaultW']
+        x_position = 'center',
+        y_position = 'center',
+        word_color = colors['white'],
+        word_select_color = colors['charcoal'],
+        back_color = colors['charcoal'],
+        back_select_color = colors['white'],
+        menu_color = colors['white']
         ):
 
         if not choices:
             raise ValueError('Choices can not be empty')
-        # if not isinstance(choice_orient_y, int):
-        #     raise ValueError('choice_orient_y can not be less than 0')
+        # if not isinstance(y_position, int):
+        #     raise ValueError('y_position can not be less than 0')
         # elif 
-        # if choice_orient_x < 0:
-        #     raise ValueError('choice_orient_x can not be less than 0')
+        # if x_position < 0:
+        #     raise ValueError('x_position can not be less than 0')
 
         self.screen, self.h, self.w = init_screen()
 
@@ -41,9 +40,8 @@ class SSelect:
         self.choices = choices
 
         self.max_lines = max_lines
-        self.message_orient = message_orient
-        self.choice_orient_x = choice_orient_x
-        self.choice_orient_y = choice_orient_y
+        self.x_position = x_position
+        self.y_position = y_position
         self.set_prompt_boundaries()
         
         self.offset = 0
@@ -70,63 +68,50 @@ class SSelect:
             self.prompt_height = min(
                 self.max_lines + self.message_height, 
                 len(self.choices) + self.message_height, 
-                self.h)
+                self.h - 1)
         else:
             self.prompt_height = min(
                 len(self.choices) + self.message_height, 
                 self.h)
 
         ''' Set prompt top '''
-        if self.choice_orient_y == 'center':
+        if self.y_position == 'center':
             self.prompt_top = self.h//2 - self.prompt_height//2
-        elif self.choice_orient_y == 'top':
+        elif self.y_position == 'top':
             self.prompt_top = 0
-        elif isinstance(self.choice_orient_y, int):
-            self.prompt_height -= self.choice_orient_y
-            self.prompt_top = self.choice_orient_y
+        elif isinstance(self.y_position, int):
+            self.prompt_height -= self.y_position
+            self.prompt_top = self.y_position
 
         ''' Set prompt bottom '''
         self.prompt_bottom = self.prompt_top + self.prompt_height
+
+        ''' Set max lines for choices '''
+        self.max_lines = self.prompt_height - self.message_height
+        self.choices_top = self.prompt_top + self.message_height
 
     def set_message_height(self):
         self.message_height = 3 if self.message is not None else 0
 
     def orient_x(self, item):
         try:
-            if self.choice_orient_x == 'center':
+            if self.x_position == 'center':
                 x = self.w//2 - int(len(str(item))//2)
-            elif self.choice_orient_x == 'left':
+            elif self.x_position == 'left':
                 x = 0
-            elif isinstance(self.choice_orient_x, int):
-                x = self.choice_orient_x
+            elif isinstance(self.x_position, int):
+                x = self.x_position
         except:
-            print(f'choice_orient_x can not equal that')
+            print(f'x_position can not equal that')
 
         return x
 
     def orient_y(self, idx):
-        try:
-            if self.choice_orient_y == 'center':
-                y = (self.h//2 - len(self.displayItems)//2) + idx
-            elif self.choice_orient_y == 'top':
-                y = idx
-            elif isinstance(self.choice_orient_y, int):
-                y = self.choice_orient_y + idx
-
-            if self.message is not None and self.max_lines == self.h:
-                self.max_lines -= 2
-                y += 2 
-        except:
-            print(f'choice_orient_y can not equal that')
-
-        self.data.append(y)
-
-        return y
+        return self.choices_top + idx
 
     def orient_message(self, x, y):
-        if self.message_orient == 'top':
-            mx = self.w//2 - int(len(self.message)//2)
-            my = y - 2
+        mx = self.w//2 - int(len(self.message)//2)
+        my = self.prompt_top
 
         return mx, my
 
@@ -157,8 +142,9 @@ class SSelect:
             mx, my = self.orient_message(x, y)
             totalPage = math.ceil(len(self.choices)/self.max_lines)
             currentPage = math.ceil(self.offset/self.max_lines) + 1
-            self.screen.addstr(my,mx,f'{self.message} ({currentPage} of {totalPage})', curses.color_pair(3))
-            self.screen.addstr(my+1,mx,'='*len(self.message), curses.color_pair(3))
+            self.screen.addstr(my,mx,f'{self.message}', curses.color_pair(3))
+            self.screen.addstr(my+1,mx+1,f'({currentPage} of {totalPage})', curses.color_pair(3))
+            rectangle(self.screen, my-1, mx-1, my+2, mx+len(self.message))
         else:
             return
 
@@ -210,7 +196,6 @@ class SSelect:
 
 select = SSelect(
     message = 'PART NUMBER',
-    choices=[f'PPC{random.randrange(100000)}.40' for i in range(1000)],
-    menu_color=colors['green'], back_select_color=colors['yellow'], max_lines=15)
+    choices=[f'PPC{random.randrange(100000)}.40' for i in range(15)], max_lines=30)
 answer = select.run()
 print(answer)

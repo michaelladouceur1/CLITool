@@ -206,10 +206,7 @@ class MSelect:
 
     def addChoice(self):
         item = self.choices[self.selected+self.offset]
-        if item == any(self.selectedChoices):
-            self.selectedChoices.remove(item)
-        else:
-            self.selectedChoices.append(item)
+        self.selectedChoices.remove(item) if item in self.selectedChoices else self.selectedChoices.append(item)
 
     def render(self):
         self.screen.erase()
