@@ -28,8 +28,9 @@ class SSelect:
 
         if not choices:
             raise ValueError('Choices can not be empty')
-        # if choice_orient_y < 0:
+        # if not isinstance(choice_orient_y, int):
         #     raise ValueError('choice_orient_y can not be less than 0')
+        # elif 
         # if choice_orient_x < 0:
         #     raise ValueError('choice_orient_x can not be less than 0')
 
@@ -49,31 +50,33 @@ class SSelect:
         self.selected = 0
         self.data = []
 
-        self.word_color = self.map_colors(word_color)
-        self.word_select_color = self.map_colors(word_select_color)
-        self.back_color = self.map_colors(back_color)
-        self.back_select_color = self.map_colors(back_select_color)
-        self.menu_color = self.map_colors(menu_color)
+        self.word_color = word_color
+        self.word_select_color = word_select_color
+        self.back_color = back_color
+        self.back_select_color = back_select_color
+        self.menu_color = menu_color
 
         init_colors(
             self.screen,
-            *self.word_color, 
-            *self.back_color,
-            *self.word_select_color,
-            *self.back_select_color,
-            *self.menu_color)
-
-    def map_colors(self,color):
-        return tuple(map(lambda x: math.ceil(x*3.92156), color))
+            self.word_color, 
+            self.back_color,
+            self.word_select_color,
+            self.back_select_color,
+            self.menu_color)
 
     def set_prompt_boundaries(self):
-        # PROMPT HEIGHT
+        ''' Set prompt height '''
         if self.max_lines is not None:
-            self.prompt_height = min(self.max_lines + self.message_height, len(self.choices) + self.message_height, self.h)
+            self.prompt_height = min(
+                self.max_lines + self.message_height, 
+                len(self.choices) + self.message_height, 
+                self.h)
         else:
-            self.prompt_height = min(len(self.choices) + self.message_height, self.h)
+            self.prompt_height = min(
+                len(self.choices) + self.message_height, 
+                self.h)
 
-        # PROMPT TOP
+        ''' Set prompt top '''
         if self.choice_orient_y == 'center':
             self.prompt_top = self.h//2 - self.prompt_height//2
         elif self.choice_orient_y == 'top':
@@ -82,18 +85,11 @@ class SSelect:
             self.prompt_height -= self.choice_orient_y
             self.prompt_top = self.choice_orient_y
 
-        # PROMPT BOTTOM
+        ''' Set prompt bottom '''
         self.prompt_bottom = self.prompt_top + self.prompt_height
 
-    # def validate_prompt_boundaries(self):
-    #     if self.prompt_top < 0:
-
-
     def set_message_height(self):
-        if self.message is not None:
-            self.message_height = 3
-        else:
-            self.message_height = 0
+        self.message_height = 3 if self.message is not None else 0
 
     def orient_x(self, item):
         try:
@@ -216,12 +212,5 @@ select = SSelect(
     message = 'PART NUMBER',
     choices=[f'PPC{random.randrange(100000)}.40' for i in range(1000)],
     menu_color=colors['green'], back_select_color=colors['yellow'], max_lines=15)
-answer = select.run()
-print(answer)
-
-select = SSelect(
-    message = 'ASSEMBLY NUMBER',
-    choices=[f'PPC{random.randrange(100000)}.40' for i in range(1000)],
-    menu_color=colors['green'], back_select_color=colors['blue'], max_lines=15, choice_orient_y=5)
 answer = select.run()
 print(answer)
