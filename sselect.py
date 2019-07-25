@@ -181,9 +181,9 @@ class SSelect:
                 self.scroll(self.UP)
             elif input == curses.KEY_DOWN:
                 self.scroll(self.DOWN)
-            elif input == curses.KEY_RIGHT:
+            elif input == curses.KEY_RIGHT or input == 338:
                 self.page(self.DOWN)
-            elif input == curses.KEY_LEFT:
+            elif input == curses.KEY_LEFT or input == 339:
                 self.page(self.UP)
             elif input == 10:
                 deinit_screen(self.screen)
@@ -196,6 +196,6 @@ class SSelect:
 
 select = SSelect(
     message = 'PART NUMBER',
-    choices=[f'PPC{random.randrange(100000)}.40' for i in range(15)], max_lines=30)
+    choices=[f'PPC{random.randrange(100000)}.40' for i in range(100)], max_lines=10)
 answer = select.run()
 print(answer)
