@@ -1,6 +1,8 @@
 import curses
 import math
 
+''' Initialization of screen object and colors '''
+
 curses_color_max = 1000
 rgb_color_max = 255
 

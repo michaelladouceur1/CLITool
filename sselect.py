@@ -5,8 +5,11 @@ import math
 import random
 from colors import colors
 from screen import init_screen, init_colors, deinit_screen
+from component import Component
 
-class SSelect:
+''' Single Selection Component: Select one item from choices to return '''
+
+class SSelect(Component):
 
     UP = 1
     DOWN = -1
@@ -22,8 +25,17 @@ class SSelect:
         word_select_color = colors['charcoal'],
         back_color = colors['charcoal'],
         back_select_color = colors['white'],
-        menu_color = colors['white']
+        message_color = colors['white']
         ):
+
+        super().__init__(
+            message,
+            word_color, 
+            word_select_color, 
+            back_color, 
+            back_select_color, 
+            message_color
+            )
 
         if not choices:
             raise ValueError('Choices can not be empty')
@@ -33,10 +45,7 @@ class SSelect:
         # if x_position < 0:
         #     raise ValueError('x_position can not be less than 0')
 
-        self.screen, self.h, self.w = init_screen()
-
-        self.message = message
-        self.set_message_height()
+        
         self.choices = choices
 
         self.max_lines = max_lines
@@ -47,20 +56,6 @@ class SSelect:
         self.offset = 0
         self.selected = 0
         self.data = []
-
-        self.word_color = word_color
-        self.word_select_color = word_select_color
-        self.back_color = back_color
-        self.back_select_color = back_select_color
-        self.menu_color = menu_color
-
-        init_colors(
-            self.screen,
-            self.word_color, 
-            self.back_color,
-            self.word_select_color,
-            self.back_select_color,
-            self.menu_color)
 
     def set_prompt_boundaries(self):
         ''' Set prompt height '''
@@ -89,9 +84,6 @@ class SSelect:
         ''' Set max lines for choices '''
         self.max_lines = self.prompt_height - self.message_height
         self.choices_top = self.prompt_top + self.message_height
-
-    def set_message_height(self):
-        self.message_height = 3 if self.message is not None else 0
 
     def orient_x(self, item):
         try:
@@ -195,7 +187,14 @@ class SSelect:
                 pass
 
 select = SSelect(
-    message = 'PART NUMBER',
+    # message = 'PART NUMBER',
     choices=[f'PPC{random.randrange(100000)}.40' for i in range(100)], max_lines=10)
 answer = select.run()
 print(answer)
+
+select = SSelect(
+    # message = 'PART NUMBER',
+    choices=[f'PPC{random.randrange(100000)}.40' for i in range(100)], max_lines=10)
+answer = select.run()
+print(answer)
+
