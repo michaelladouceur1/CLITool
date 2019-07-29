@@ -187,8 +187,8 @@ class SSelect(Component):
                 pass
 
 select = SSelect(
-    # message = 'PART NUMBER',
-    choices=[f'PPC{random.randrange(100000)}.40' for i in range(100)], max_lines=10)
+    message = 'PART NUMBER',
+    choices=[f'PPC{random.randrange(100000)}.40' for i in range(10000)], max_lines=15)
 answer = select.run()
 print(answer)
 
