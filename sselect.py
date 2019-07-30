@@ -67,7 +67,7 @@ class SSelect(Component):
         else:
             self.prompt_height = min(
                 len(self.choices) + self.message_height, 
-                self.h)
+                self.h - 1)
 
         ''' Set prompt top '''
         if self.y_position == 'center':
