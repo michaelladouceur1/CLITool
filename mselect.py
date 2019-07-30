@@ -40,9 +40,6 @@ class MSelect(Component):
         if not choices:
             raise ValueError('Choices can not be empty')
 
-        # self.init_screen()
-
-        # self.message = message
         self.choices = choices
         self.selectedChoices = []
 
@@ -55,19 +52,6 @@ class MSelect(Component):
         self.offset = 0
         self.selected = 0
         self.data = []
-
-        # self.word_color = self.map_colors(word_color)
-        # self.word_select_color = self.map_colors(word_select_color)
-        # self.back_color = self.map_colors(back_color)
-        # self.back_select_color = self.map_colors(back_select_color)
-        # self.message_color = self.map_colors(message_color)
-
-        # self.init_colors(
-        #     *self.word_color, 
-        #     *self.back_color,
-        #     *self.word_select_color,
-        #     *self.back_select_color,
-        #     *self.message_color)
     
     def set_prompt_boundaries(self):
         ''' Set prompt height '''
