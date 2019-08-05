@@ -51,6 +51,15 @@ class Component():
         else:
             return
 
+    # def validate_boundaries(func):
+    #     def wrapper(*args, **kwargs):
+    #         print(func.__name__)
+    #         value = func(*args, **kwargs)
+    #         return value
+        
+    #     return wrapper
+
+
 class ListComponent(Component):
 
     def __init__(
@@ -129,7 +138,8 @@ class ListComponent(Component):
             print(f'x_position can not equal that')
 
         return x
-
+    
+    # @Component.validate_boundaries
     def orient_y(self, idx):
         return self.choices_top + idx
 
