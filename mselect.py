@@ -43,17 +43,6 @@ class MSelect(ListComponent):
 
         self.selectedChoices = []
 
-    def display(self, idx, item):
-        x = self.orient_x(item)
-        y = self.orient_y(idx)
-        if idx == 0:
-            self.display_message(x,y)
-
-        if idx == self.selected or item in self.selectedChoices:
-            self.screen.addstr(y,x,str(item),curses.color_pair(2))
-        else:
-            self.screen.addstr(y,x,str(item),curses.color_pair(1))
-
     def addChoice(self):
         item = self.choices[self.selected+self.offset]
         self.selectedChoices.remove(item) if item in self.selectedChoices else self.selectedChoices.append(item)
@@ -88,7 +77,7 @@ class MSelect(ListComponent):
 
 select = MSelect(
     message = 'PART NUMBER',
-    choices=[f'PPC{random.randrange(100000)}.40' for i in range(1000)],
+    choices=[f'PPC{random.randrange(100000)}.40' for i in range(50)],
     message_color=colors['blue'], max_lines=15, y_position=5)
 answer = select.run()
 print(answer)

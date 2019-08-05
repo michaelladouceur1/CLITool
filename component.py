@@ -98,6 +98,10 @@ class ListComponent(Component):
         self.offset = 0
         self.selected = 0
 
+    def class_attributes(cls):
+        print(f'{cls.__dict__}\n\n')
+        return True if 'selectedChoices' in cls.__dict__ else False
+
     def set_prompt_boundaries(self):
         ''' Set prompt height '''
         if self.max_lines is not None:
@@ -177,10 +181,16 @@ class ListComponent(Component):
         if idx == 0:
             self.display_message(x,y)
 
-        if idx == self.selected:
-            self.screen.addstr(y,x,str(item),curses.color_pair(2))
+        if self.class_attributes() == True:
+            if idx == self.selected or item in self.selectedChoices:
+                self.screen.addstr(y,x,str(item),curses.color_pair(2))
+            else:
+                self.screen.addstr(y,x,str(item),curses.color_pair(1))
         else:
-            self.screen.addstr(y,x,str(item),curses.color_pair(1))
+            if idx == self.selected:
+                self.screen.addstr(y,x,str(item),curses.color_pair(2))
+            else:
+                self.screen.addstr(y,x,str(item),curses.color_pair(1))
 
     def render(self):
         self.screen.erase()
