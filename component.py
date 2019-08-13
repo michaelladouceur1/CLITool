@@ -99,7 +99,7 @@ class ListComponent(Component):
         self.selected = 0
 
     def class_attributes(cls):
-        print(f'{cls.__dict__}\n\n')
+        # print(f'{cls.__dict__}\n\n')
         return True if 'selectedChoices' in cls.__dict__ else False
 
     def set_prompt_boundaries(self):
