@@ -1,10 +1,7 @@
 import curses
-from curses.textpad import rectangle
-import time
-import math
 import random
 from colors import colors
-from screen import init_screen, init_colors, deinit_screen
+from screen import deinit_screen
 from component import Component, ListComponent
 
 
