@@ -3,9 +3,9 @@ from curses.textpad import rectangle
 import time
 import math
 import random
-from colors import colors
-from screen import init_screen, init_colors, deinit_screen
-from component import Component, ListComponent
+from .colors import colors
+from .screen import init_screen, init_colors, deinit_screen
+from .component import Component, ListComponent
 
 ''' Single Selection Component: Select one item from choices to return '''
 

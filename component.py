@@ -1,8 +1,8 @@
 import curses
 from curses.textpad import rectangle
 import math
-from screen import init_screen, init_colors, deinit_screen
-from colors import colors
+from .screen import init_screen, init_colors, deinit_screen
+from .colors import colors
 
 ''' Root Component class that all components inherit '''
 

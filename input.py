@@ -1,9 +1,9 @@
 import curses
 from curses.textpad import Textbox, rectangle
 
-from colors import colors
-from screen import deinit_screen
-from component import Component
+from .colors import colors
+from .screen import deinit_screen
+from .component import Component
 
 
 class Input(Component):
