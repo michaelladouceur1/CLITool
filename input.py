@@ -30,8 +30,10 @@ class Input(Component):
         )
 
     def run(self):
+        self.screen.addstr(1,1,self.message,curses.color_pair(3))
+        self.screen.refresh()
         
-        editwin = curses.newwin(1,30,2,1)
+        editwin = curses.newwin(1,30,1,len(self.message)+1)
         # self.screen.refresh()
 
         box = Textbox(editwin)
